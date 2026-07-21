@@ -5,21 +5,25 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-    <title>Inventaris Aset IT - PT KAI</title>
+    <title>Inventaris Aset IT</title>
 
     <link rel="stylesheet" href="style.css">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect"
+        href="https://fonts.googleapis.com">
 
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 
-    <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
@@ -27,101 +31,114 @@
 
 <body>
 
-    <div class="container">
+<div class="app">
 
-        <!-- HEADER -->
-        <header class="header">
+    <!-- HEADER -->
 
-            <img src="assets/logo-kai.png" class="logo">
+    <header class="hero">
 
-            <h1>INVENTARIS ASET IT</h1>
+        <div class="overlay"></div>
 
-            <p>PT Kereta Api Indonesia (Persero)</p>
+        <img src="assets/logo-kai.png" class="logo">
 
-            <small>DIVRE II SUMATERA BARAT</small>
+        <h1>INVENTARIS ASET IT</h1>
 
-        </header>
+        <p>PT Kereta Api Indonesia (Persero)</p>
 
-        <!-- CONTENT -->
+        <span>DIVRE II SUMATERA BARAT</span>
 
-        <main class="content">
+    </header>
 
-            <div class="scanner-card">
+    <!-- SCANNER -->
 
-    <h2>
-    <i class="fa-solid fa-qrcode"></i>
-    Scan QR Code
-    </h2>
+    <section class="card">
 
-    <div id="reader"></div>
+        <div class="card-title">
 
-    </div>
+            <i class="fa-solid fa-qrcode"></i>
 
-            <div class="form-group">
+            Scan QR Code
 
-                <label>Barcode</label>
+        </div>
 
-                <input
-                    type="text"
-                    id="barcode"
-                    readonly>
+        <div id="reader"></div>
 
-            </div>
+    </section>
 
-            <div class="form-group">
+    <!-- FORM -->
 
-                <label>Nama Barang</label>
+    <section class="card">
 
-                <input
-                    type="text"
-                    id="namaBarang"
-                    placeholder="Masukkan nama barang">
+        <div class="form-group">
 
-            </div>
+            <label>Barcode</label>
 
-            <div class="form-group">
+            <input
+                type="text"
+                id="barcode"
+                readonly>
 
-                <label>Petugas</label>
+        </div>
 
-                <input
-                    type="text"
-                    id="petugas"
-                    placeholder="Masukkan nama petugas">
+        <div class="form-group">
 
-            </div>
+            <label>Nama Barang</label>
 
-            <button id="btnSimpan" onclick="simpanData()">
-                <i class="fa-solid fa-floppy-disk"></i>
+            <input
+                type="text"
+                id="namaBarang"
+                placeholder="Masukkan nama barang">
 
-                SIMPAN DATA
-             </button>
+        </div>
 
-             <div id="status"></div>
+        <div class="form-group">
 
-        </main>
+            <label>Petugas</label>
 
-        <section class="history">
+            <input
+                type="text"
+                id="petugas"
+                placeholder="Masukkan nama petugas">
 
-            <h2>
+        </div>
+
+        <button id="btnSimpan"
+            onclick="simpanData()">
+
+            <i class="fa-solid fa-floppy-disk"></i>
+
+            SIMPAN DATA
+
+        </button>
+
+        <div id="status"></div>
+
+    </section>
+
+    <!-- HISTORY -->
+
+    <section class="card">
+
+        <div class="card-title">
 
             <i class="fa-solid fa-clock-rotate-left"></i>
 
             Riwayat Scan Hari Ini
 
-            </h2>
+        </div>
 
-            <div id="historyList">
+        <div id="historyList">
 
-                Belum ada scan hari ini
+            Belum ada scan hari ini
 
-            </div>
+        </div>
 
-        </section>
+    </section>
 
-    </div>
+</div>
 
-    <script src="app.js"></script>
-    <script src="api.js"></script>
+<script src="app.js"></script>
+<script src="api.js"></script>
 
 </body>
 

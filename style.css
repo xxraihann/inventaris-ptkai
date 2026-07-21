@@ -1,19 +1,25 @@
+/* ==========================================
+   INVENTARIS ASET PT KAI
+   STYLE.CSS V3.0
+========================================== */
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
 }
 
 body{
 
-    background:#eef3f9;
+    font-family:'Poppins',sans-serif;
 
-    color:#1d3557;
+    background:#eef3f8;
+
+    color:#333;
 
 }
 
-.container{
+.app{
 
     max-width:430px;
 
@@ -21,63 +27,93 @@ body{
 
     min-height:100vh;
 
-    padding-bottom:30px;
+    overflow:hidden;
 
 }
 
-/* ================= HEADER ================= */
+/* ==========================================
+   HEADER
+========================================== */
 
-.header{
-
-    background:linear-gradient(160deg,#005BAC,#0D7BEA);
-
-    color:white;
-
-    text-align:center;
-
-    padding:35px 20px 60px;
-
-    border-radius:0 0 35px 35px;
-
-    box-shadow:0 10px 25px rgba(0,0,0,.15);
+.hero{
 
     position:relative;
 
+    height:250px;
+
+    background:
+    linear-gradient(rgba(0,91,172,.75),rgba(0,91,172,.75)),
+    url("assetsheader-bg.png");
+
+    background-size:cover;
+
+    background-position:center;
+
+    background-repeat:no-repeat;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    color:#fff;
+
+    border-radius:0 0 35px 35px;
+
+    overflow:hidden;
+
 }
 
-.header::after{
+.hero::before{
 
     content:"";
 
     position:absolute;
 
-    bottom:-18px;
+    inset:0;
 
-    left:50%;
+    background:
 
-    transform:translateX(-50%);
+    radial-gradient(circle at top right,
+    rgba(255,255,255,.15),
+    transparent 45%),
 
-    width:70px;
+    radial-gradient(circle at bottom left,
+    rgba(255,255,255,.10),
+    transparent 40%);
 
-    height:6px;
+}
 
-    border-radius:20px;
+.overlay{
 
-    background:#F58220;
+    position:absolute;
+
+    inset:0;
+
+    backdrop-filter:blur(2px);
 
 }
 
 .logo{
 
-    width:120px;
+    width:110px;
+
+    z-index:2;
 
     margin-bottom:15px;
 
+    filter:drop-shadow(0 5px 10px rgba(0,0,0,.25));
+
 }
 
-.header h1{
+.hero h1{
 
-    font-size:27px;
+    z-index:2;
+
+    font-size:28px;
 
     font-weight:700;
 
@@ -85,67 +121,117 @@ body{
 
 }
 
-.header p{
+.hero p{
+
+    z-index:2;
 
     margin-top:8px;
 
     font-size:15px;
 
-    opacity:.95;
-
 }
 
-.header small{
+.hero span{
 
-    display:block;
+    z-index:2;
 
-    margin-top:8px;
+    margin-top:6px;
 
     font-size:13px;
 
-    letter-spacing:1px;
+    letter-spacing:2px;
 
 }
 
-/* ================= CONTENT ================= */
+/* ==========================================
+   CARD
+========================================== */
 
-.content{
+.card{
 
-    margin-top:-35px;
+    background:#fff;
 
-    padding:18px;
+    margin:18px;
+
+    margin-top:-55px;
+
+    border-radius:22px;
+
+    padding:20px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.08);
+
+    position:relative;
+
+    z-index:5;
+
+    animation:fadeUp .5s ease;
 
 }
 
-/* ================= CARD ================= */
+.card+.card{
 
-.scanner-card{
+    margin-top:0;
 
-    background:white;
+}
 
-    border-radius:20px;
+.card-title{
 
-    padding:18px;
+    display:flex;
 
-    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    align-items:center;
+
+    gap:10px;
+
+    color:#005BAC;
+
+    font-size:20px;
+
+    font-weight:600;
 
     margin-bottom:18px;
 
 }
 
-.scanner-card h2{
+/* ==========================================
+   SCANNER
+========================================== */
 
-    color:#005BAC;
+#reader{
 
-    margin-bottom:15px;
+    width:100%;
 
-    font-size:20px;
+    overflow:hidden;
+
+    border-radius:20px;
+
+    background:#000;
+
+    border:none !important;
 
 }
 
+#reader video{
+
+    border-radius:20px;
+
+}
+
+#reader__scan_region{
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+/* ==========================================
+   FORM
+========================================== */
+
 .form-group{
 
-    margin-bottom:16px;
+    margin-bottom:18px;
 
 }
 
@@ -153,11 +239,11 @@ body{
 
     display:block;
 
-    margin-bottom:7px;
-
-    font-size:14px;
+    margin-bottom:8px;
 
     font-weight:600;
+
+    color:#444;
 
 }
 
@@ -165,93 +251,95 @@ body{
 
     width:100%;
 
-    height:52px;
+    height:58px;
 
     border:none;
 
     outline:none;
 
-    border-radius:14px;
-
     background:#F5F7FA;
+
+    border-radius:16px;
 
     padding:0 18px;
 
     font-size:15px;
 
-    transition:.25s;
+    transition:.3s;
 
 }
 
 .form-group input:focus{
 
-    background:white;
+    background:#fff;
 
-    border:2px solid #005BAC;
-
-}
-
-/* ================= SCANNER ================= */
-
-#reader{
-
-    border:none !important;
-
-    width:100%;
+    box-shadow:0 0 0 4px rgba(0,91,172,.12);
 
 }
 
-#reader video{
-
-    border-radius:18px;
-
-}
-
-/* ================= BUTTON ================= */
+/* ==========================================
+   BUTTON
+========================================== */
 
 #btnSimpan{
 
     width:100%;
 
-    height:55px;
+    height:58px;
 
     border:none;
 
-    border-radius:15px;
+    border-radius:16px;
 
-    background:linear-gradient(90deg,#005BAC,#1976D2);
+    background:linear-gradient(135deg,#005BAC,#0D7BEA);
 
     color:white;
 
-    font-size:16px;
+    font-size:17px;
 
     font-weight:600;
 
     cursor:pointer;
 
-    transition:.25s;
+    transition:.3s;
 
-    box-shadow:0 10px 18px rgba(0,91,172,.25);
+    box-shadow:0 15px 30px rgba(0,91,172,.25);
 
 }
 
 #btnSimpan:hover{
 
-    transform:translateY(-2px);
+    transform:translateY(-3px);
 
 }
 
 #btnSimpan:active{
 
-    transform:scale(.98);
+    transform:scale(.97);
 
 }
 
-/* ================= STATUS ================= */
+#btnSimpan i{
+
+    margin-right:8px;
+
+}
+
+/* ==========================================
+   STATUS
+========================================== */
 
 #status{
 
     margin-top:15px;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:#EEF7FF;
+
+    color:#005BAC;
 
     text-align:center;
 
@@ -259,67 +347,129 @@ body{
 
 }
 
-/* ================= HISTORY ================= */
-
-.history{
-
-    padding:18px;
-
-}
-
-.history h2{
-
-    color:#005BAC;
-
-    margin-bottom:15px;
-
-}
+/* ==========================================
+   HISTORY
+========================================== */
 
 #historyList{
 
-    background:white;
+    display:flex;
 
-    border-radius:18px;
+    flex-direction:column;
 
-    padding:18px;
-
-    box-shadow:0 8px 18px rgba(0,0,0,.08);
+    gap:12px;
 
 }
 
 .history-item{
 
-    padding:12px;
+    background:#F7F9FC;
 
-    border-bottom:1px solid #eee;
+    padding:15px;
+
+    border-radius:15px;
+
+    border-left:5px solid #005BAC;
+
+    transition:.3s;
 
 }
 
-.history-item:last-child{
+.history-item:hover{
 
-    border-bottom:none;
+    transform:translateY(-2px);
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
 
 }
 
-/* ================= MOBILE ================= */
+/* ==========================================
+   SCROLLBAR
+========================================== */
+
+::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:#005BAC;
+
+    border-radius:10px;
+
+}
+
+/* ==========================================
+   ANIMATION
+========================================== */
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ==========================================
+   MOBILE
+========================================== */
 
 @media(max-width:480px){
 
-.header{
+.hero{
 
-padding:30px 15px 55px;
+height:230px;
+
+padding:20px;
 
 }
 
 .logo{
 
-width:100px;
+width:95px;
 
 }
 
-.header h1{
+.hero h1{
 
-font-size:23px;
+font-size:24px;
+
+}
+
+.hero p{
+
+font-size:14px;
+
+}
+
+.hero span{
+
+font-size:12px;
+
+}
+
+.card{
+
+margin:14px;
+
+margin-top:-45px;
+
+padding:18px;
 
 }
 
