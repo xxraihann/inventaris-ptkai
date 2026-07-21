@@ -1,0 +1,17 @@
+#reader video{
+
+    width:100%;
+
+    border-radius:15px;
+
+}
+
+#reader{
+
+    width:100%;
+
+    min-height:320px;
+
+    overflow:hidden;
+
+}
