@@ -1,0 +1,25 @@
+{
+  "name": "Inventaris Aset IT PT KAI",
+  "short_name": "Inventaris",
+  "description": "Aplikasi Inventaris Asset IT Divre II Sumatera Barat",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#005BAC",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
