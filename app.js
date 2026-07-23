@@ -249,7 +249,26 @@ function suksesScan() {
   beep.currentTime = 0;
   beep.play().catch(() => {});
 
+  stopScanner();
   status("✅ Barcode berhasil dipindai");
+}
+
+function showToast(message) {
+  let toast = document.getElementById("toastNotification");
+
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toastNotification";
+    toast.className = "toast";
+    document.body.appendChild(toast);
+  }
+
+  toast.innerText = message;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2200);
 }
 
 // ======================================
@@ -261,6 +280,7 @@ function status(text) {
 
   if (el) {
     el.innerHTML = text;
+    el.style.display = "block";
   }
 }
 

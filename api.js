@@ -48,14 +48,29 @@ async function simpanData() {
   try {
     const response = await fetch(API_URL, {
       method: "POST",
-      body: formData
+      body: formData,
+      headers: {
+        "Accept": "application/json"
+      }
     });
 
-    const result = await response.json();
+    const responseText = await response.text();
+    let result = null;
 
-    if (result.success) {
+    try {
+      result = JSON.parse(responseText);
+    } catch (e) {
+      console.error("Server response bukan JSON:", responseText);
+    }
+
+    if (result && result.success) {
       if (statusEl) {
         statusEl.innerHTML = "✅ Data berhasil disimpan";
+        statusEl.style.display = "block";
+      }
+
+      if (typeof showToast === "function") {
+        showToast("✅ Data berhasil disimpan");
       }
 
       const historyList = getField("historyList");
@@ -69,8 +84,12 @@ async function simpanData() {
         mulaiScanner();
       }
     } else {
+      const message = result && result.message
+        ? result.message
+        : "Server Apps Script tidak merespons JSON. Periksa fungsi doPost dan deployment web app.";
+
       if (statusEl) {
-        statusEl.innerHTML = "❌ " + result.message;
+        statusEl.innerHTML = "❌ " + message;
       }
     }
   } catch (err) {
