@@ -8,9 +8,10 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Inventaris Aset IT</title>
+    <title>Inventaris Aset IT - PT KAI</title>
 
-    <!-- PWA -->
+    <!-- ================= PWA ================= -->
+
     <link rel="manifest" href="manifest.json">
 
     <meta name="theme-color" content="#005BAC">
@@ -25,10 +26,12 @@
 
     <link rel="apple-touch-icon" href="assets/icon-192.png">
 
-    <!-- CSS -->
+    <!-- ================= CSS ================= -->
+
     <link rel="stylesheet" href="style.css">
 
-    <!-- FONT -->
+    <!-- ================= FONT ================= -->
+
     <link rel="preconnect"
         href="https://fonts.googleapis.com">
 
@@ -36,15 +39,18 @@
         href="https://fonts.gstatic.com"
         crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <!-- ICON -->
+    <!-- ================= ICON ================= -->
+
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- QR Scanner -->
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <!-- ================= ZXING ================= -->
+
+    <script src="https://unpkg.com/@zxing/browser@0.1.5"></script>
 
 </head>
 
@@ -52,13 +58,16 @@
 
 <div class="app">
 
-    <!-- HEADER -->
+    <!-- ======================================
+            HEADER
+    ======================================= -->
 
     <header class="hero">
 
         <div class="overlay"></div>
 
-        <img src="assets/logo-kai.png" class="logo">
+        <img src="assets/logo-kai.png"
+            class="logo">
 
         <h1>INVENTARIS ASET IT</h1>
 
@@ -68,7 +77,9 @@
 
     </header>
 
-    <!-- SCANNER -->
+    <!-- ======================================
+            SCANNER
+    ======================================= -->
 
     <section class="card">
 
@@ -78,19 +89,81 @@
 
             Scan QR Code
 
+        <div class="reader-container">
+
+    <div id="reader"></div>
+
+    <div class="scanner-overlay">
+
+        <div class="scan-box">
+
+            <div class="scan-line"></div>
+
         </div>
 
-        <div id="reader"></div>
+    </div>
+
+</div>
+
+            <!-- Overlay Scanner -->
+
+            <div class="scanner-overlay">
+
+                <div class="scan-box"></div>
+
+            </div>
+
+        </div>
+
+        <div class="scanner-tools">
+
+            <button id="flashBtn">
+
+                <i class="fa-solid fa-bolt"></i>
+
+            </button>
+
+            <button id="zoomOut">
+
+                <i class="fa-solid fa-magnifying-glass-minus"></i>
+
+            </button>
+
+            <span id="zoomValue">
+
+                1.0x
+
+            </span>
+
+            <button id="zoomIn">
+
+                <i class="fa-solid fa-magnifying-glass-plus"></i>
+
+            </button>
+
+        </div>
+
+        <div id="status">
+
+            📷 Membuka kamera...
+
+        </div>
 
     </section>
 
-    <!-- FORM -->
+    <!-- ======================================
+            FORM
+    ======================================= -->
 
     <section class="card">
 
         <div class="form-group">
 
-            <label>Barcode</label>
+            <label>
+
+                Barcode
+
+            </label>
 
             <input
                 type="text"
@@ -101,7 +174,11 @@
 
         <div class="form-group">
 
-            <label>Nama Barang</label>
+            <label>
+
+                Nama Barang
+
+            </label>
 
             <input
                 type="text"
@@ -112,7 +189,11 @@
 
         <div class="form-group">
 
-            <label>Petugas</label>
+            <label>
+
+                Petugas
+
+            </label>
 
             <input
                 type="text"
@@ -121,7 +202,8 @@
 
         </div>
 
-        <button id="btnSimpan"
+        <button
+            id="btnSimpan"
             onclick="simpanData()">
 
             <i class="fa-solid fa-floppy-disk"></i>
@@ -130,11 +212,11 @@
 
         </button>
 
-        <div id="status"></div>
-
     </section>
 
-    <!-- HISTORY -->
+    <!-- ======================================
+            HISTORY
+    ======================================= -->
 
     <section class="card">
 
@@ -156,28 +238,36 @@
 
 </div>
 
-<!-- Javascript -->
+<!-- ======================================
+        SCRIPT
+======================================= -->
+
 <script src="app.js"></script>
+
 <script src="api.js"></script>
 
-<!-- Register Service Worker -->
+<!-- ======================================
+        SERVICE WORKER
+======================================= -->
+
 <script>
 
-if ('serviceWorker' in navigator) {
+if ("serviceWorker" in navigator) {
 
-    window.addEventListener('load', () => {
+    window.addEventListener("load", () => {
 
-        navigator.serviceWorker.register('./service-worker.js')
-        .then(reg => {
+        navigator.serviceWorker
+            .register("./service-worker.js")
+            .then(reg => {
 
-            console.log("Service Worker berhasil:", reg.scope);
+                console.log("Service Worker aktif");
 
-        })
-        .catch(err => {
+            })
+            .catch(err => {
 
-            console.log("Service Worker gagal:", err);
+                console.error(err);
 
-        });
+            });
 
     });
 

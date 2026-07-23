@@ -43,6 +43,8 @@ async function simpanData() {
                 "✅ Data berhasil disimpan";
 
             document.getElementById("barcode").value = "";
+            lastResult = "";
+            lastScanTime = 0;
             document.getElementById("namaBarang").value = "";
             document.getElementById("petugas").value = "";
 
