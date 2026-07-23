@@ -32,14 +32,20 @@ function buatHints() {
     hints.set(
         ZXing.DecodeHintType.POSSIBLE_FORMATS,
         [
+            ZXing.BarcodeFormat.QR_CODE,
+            ZXing.BarcodeFormat.DATA_MATRIX,
             ZXing.BarcodeFormat.CODE_128,
-            ZXing.BarcodeFormat.CODE_39,
-            ZXing.BarcodeFormat.EAN_13,
-            ZXing.BarcodeFormat.EAN_8,
-            ZXing.BarcodeFormat.UPC_A
+            ZXing.BarcodeFormat.CODE_39
         ]
     );
 
+    hints.set(
+        ZXing.DecodeHintType.TRY_HARDER,
+        true
+    );
+
+    return hints;
+}
     // TRY_HARDER dimatikan by default (lebih cepat). Kalau barcode
     // banyak yang buram/rusak dan susah kebaca, ubah jadi true --
     // konsekuensinya scan sedikit lebih lambat per frame.
@@ -79,13 +85,17 @@ async function mulaiScanner() {
         // sudah benar. Autofocus diterapkan belakangan, terpisah, dan aman
         // kalau gagal (lihat terapkanFocus()).
         const constraints = {
-            video: {
-                facingMode: { ideal: "environment" },
-                width: { ideal: 1280 },
-                height: { ideal: 720 }
-            },
-            audio: false
-        };
+    video: {
+    facingMode: {
+        ideal: "environment"
+    },
+    width: {
+        ideal: 1920
+    },
+    height: {
+        ideal: 1080
+    }
+}
 
         const cameraVideo = document.getElementById("cameraVideo");
 
@@ -129,6 +139,16 @@ async function mulaiScanner() {
         if (cameraVideo && cameraVideo.srcObject) {
             activeStream = cameraVideo.srcObject;
             terapkanFocus();
+            if (capabilities.zoom) {
+                await track.applyConstraints({
+                advanced:[
+                {
+                zoom: capabilities.zoom.max * 0.6
+            }
+        ]
+    });
+
+}
         }
 
         status("✅ Scanner siap");
