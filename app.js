@@ -29,13 +29,34 @@ function buatHints() {
     ZXing.DecodeHintType.POSSIBLE_FORMATS,
     [
       ZXing.BarcodeFormat.QR_CODE,
-      ZXing.BarcodeFormat.DATA_MATRIX
+      ZXing.BarcodeFormat.DATA_MATRIX,
+      ZXing.BarcodeFormat.CODE_128,
+      ZXing.BarcodeFormat.CODE_39,
+      ZXing.BarcodeFormat.CODE_93,
+      ZXing.BarcodeFormat.CODABAR,
+      ZXing.BarcodeFormat.EAN_13,
+      ZXing.BarcodeFormat.EAN_8,
+      ZXing.BarcodeFormat.UPC_A,
+      ZXing.BarcodeFormat.UPC_E,
+      ZXing.BarcodeFormat.ITF,
+      ZXing.BarcodeFormat.PDF_417,
+      ZXing.BarcodeFormat.AZTEC
     ]
   );
 
   hints.set(
     ZXing.DecodeHintType.TRY_HARDER,
     true
+  );
+
+  hints.set(
+    ZXing.DecodeHintType.ALSO_INVERTED,
+    true
+  );
+
+  hints.set(
+    ZXing.DecodeHintType.CHARACTER_SET,
+    "UTF-8"
   );
 
   return hints;
