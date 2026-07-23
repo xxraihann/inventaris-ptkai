@@ -413,6 +413,16 @@ body{
 
     display:none;
 
+    transition:.25s ease;
+
+}
+
+#status.is-paused{
+
+    background:#FFF5E6;
+
+    color:#8A5B00;
+
 }
 
 .toast{
@@ -648,6 +658,54 @@ height:320px;
     border-radius:20px;
 
     background:#000;
+
+    transition:transform .25s ease, filter .25s ease, opacity .25s ease;
+
+}
+
+.reader-container.is-paused{
+
+    filter:grayscale(.15);
+
+    opacity:.82;
+
+}
+
+.scan-paused-message{
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:16px;
+
+    transform:translateX(-50%);
+
+    background:rgba(0,0,0,.72);
+
+    color:#fff;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    border-radius:999px;
+
+    padding:8px 14px;
+
+    text-align:center;
+
+    opacity:0;
+
+    transition:.25s ease;
+
+    pointer-events:none;
+
+}
+
+.reader-container.is-paused .scan-paused-message{
+
+    opacity:1;
 
 }
 

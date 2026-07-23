@@ -78,10 +78,17 @@ async function simpanData() {
         historyList.innerHTML = "<div class='history-item'>✔ " + namaBarang + "</div>";
       }
 
+      const barcodeInput = getField("barcode");
+      if (barcodeInput) {
+        barcodeInput.value = barcode;
+      }
+
       resetForm();
 
       if (typeof mulaiScanner === "function") {
-        mulaiScanner();
+        setTimeout(() => {
+          mulaiScanner();
+        }, 300);
       }
     } else {
       const message = result && result.message

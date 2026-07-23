@@ -11,6 +11,7 @@ let lastResult = "";
 let lastScanTime = 0;
 let currentZoom = 1;
 let flashOn = false;
+let isScannerRunning = false;
 
 const SCAN_DELAY = 2000;
 
@@ -66,6 +67,19 @@ function buatHints() {
 // CAMERA CLEANUP
 // ======================================
 
+function setScannerVisualState(isRunning) {
+  const container = document.querySelector(".reader-container");
+  const statusEl = document.getElementById("status");
+
+  if (!container) return;
+
+  container.classList.toggle("is-paused", !isRunning);
+
+  if (statusEl) {
+    statusEl.classList.toggle("is-paused", !isRunning);
+  }
+}
+
 async function stopScanner() {
   if (scannerControls && typeof scannerControls.stop === "function") {
     try {
@@ -79,6 +93,21 @@ async function stopScanner() {
     activeStream.getTracks().forEach(track => track.stop());
     activeStream = null;
   }
+
+  const video = document.getElementById("cameraVideo");
+  if (video) {
+    try {
+      video.pause();
+    } catch (e) {
+      console.log("Pause video gagal");
+    }
+    video.srcObject = null;
+  }
+
+  scannerControls = null;
+  codeReader = null;
+  isScannerRunning = false;
+  setScannerVisualState(false);
 }
 
 // ======================================
@@ -87,6 +116,10 @@ async function stopScanner() {
 
 async function mulaiScanner() {
   try {
+    if (isScannerRunning) {
+      return;
+    }
+
     status("📷 Membuka kamera...");
 
     const video = document.getElementById("cameraVideo");
@@ -150,6 +183,8 @@ async function mulaiScanner() {
       });
 
     await terapkanFocus();
+    isScannerRunning = true;
+    setScannerVisualState(true);
     status("✅ Scanner siap");
   } catch (error) {
     console.error(error);
@@ -241,7 +276,7 @@ async function ubahZoom(arah) {
 // SUKSES
 // ======================================
 
-function suksesScan() {
+async function suksesScan() {
   if (navigator.vibrate) {
     navigator.vibrate(150);
   }
@@ -249,8 +284,8 @@ function suksesScan() {
   beep.currentTime = 0;
   beep.play().catch(() => {});
 
-  stopScanner();
-  status("✅ Barcode berhasil dipindai");
+  await stopScanner();
+  status("✅ Barcode berhasil dipindai. Kamera dimatikan sementara.");
 }
 
 function showToast(message) {
