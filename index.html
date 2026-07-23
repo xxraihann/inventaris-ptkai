@@ -3,278 +3,493 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-    <title>Inventaris Aset IT - PT KAI</title>
+<meta http-equiv="Permissions-Policy" content="camera=*">
 
-    <!-- ================= PWA ================= -->
 
-    <link rel="manifest" href="manifest.json">
+<title>
+Inventaris Aset IT - PT KAI
+</title>
 
-    <meta name="theme-color" content="#005BAC">
 
-    <meta name="mobile-web-app-capable" content="yes">
+<!-- PWA -->
 
-    <meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
 
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#005BAC">
 
-    <meta name="apple-mobile-web-app-title" content="Inventaris">
+<meta name="mobile-web-app-capable" content="yes">
 
-    <link rel="apple-touch-icon" href="assets/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
 
-    <!-- ================= CSS ================= -->
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-    <link rel="stylesheet" href="style.css">
+<meta name="apple-mobile-web-app-title" content="Inventaris">
 
-    <!-- ================= FONT ================= -->
+<link rel="apple-touch-icon" href="assets/icon-192.png">
 
-    <link rel="preconnect"
-        href="https://fonts.googleapis.com">
 
-    <link rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+<!-- CSS -->
 
-    <!-- ================= ICON ================= -->
+<link rel="stylesheet" href="style.css">
 
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <!-- ================= ZXING ================= -->
-    <!-- library dulu (berisi BarcodeFormat, DecodeHintType), baru browser layer -->
 
-    <script src="https://unpkg.com/@zxing/library@0.20.0"></script>
-    <script src="https://unpkg.com/@zxing/browser@0.1.5"></script>
+<!-- FONT -->
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+
+
+<!-- ICON -->
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+
+
+<!-- ZXING -->
+
+<script src="https://unpkg.com/@zxing/library@0.20.0"></script>
+
+<script src="https://unpkg.com/@zxing/browser@0.1.5"></script>
+
 
 </head>
 
+
+
 <body>
+
 
 <div class="app">
 
-    <!-- ======================================
-            HEADER
-    ======================================= -->
 
-    <header class="hero">
 
-        <div class="overlay"></div>
+<!-- HEADER -->
 
-        <img src="assets/logo-kai.png"
-            class="logo">
 
-        <h1>INVENTARIS ASET IT</h1>
+<header class="hero">
 
-        <p>PT Kereta Api Indonesia (Persero)</p>
 
-        <span>DIVRE II SUMATERA BARAT</span>
+<div class="overlay"></div>
 
-    </header>
 
-    <!-- ======================================
-            SCANNER
-    ======================================= -->
 
-    <section class="card">
+<img 
+src="assets/logo-kai.png"
+class="logo">
 
-        <div class="card-title">
 
-            <i class="fa-solid fa-barcode"></i>
 
-            Scan Barcode
+<h1>
+INVENTARIS ASET IT
+</h1>
 
-        </div>
 
-        <div class="reader-container">
+<p>
+PT Kereta Api Indonesia (Persero)
+</p>
 
-            <div id="reader">
-                <video id="cameraVideo" autoplay muted playsinline></video>
-            </div>
 
-            <div class="scanner-overlay">
+<span>
+DIVRE II SUMATERA BARAT
+</span>
 
-                <div class="scan-box">
 
-                    <span class="corner tl"></span>
-                    <span class="corner tr"></span>
-                    <span class="corner bl"></span>
-                    <span class="corner br"></span>
+</header>
 
-                    <div class="scan-line"></div>
 
-                </div>
 
-            </div>
 
-        </div>
 
-        <div class="scanner-tools">
+<!-- SCANNER -->
 
-            <button id="flashBtn">
 
-                <i class="fa-solid fa-bolt"></i>
+<section class="card">
 
-            </button>
 
-            <button id="zoomOut">
+<div class="card-title">
 
-                <i class="fa-solid fa-magnifying-glass-minus"></i>
 
-            </button>
+<i class="fa-solid fa-barcode"></i>
 
-            <span id="zoomValue">
 
-                1.0x
+Scan Barcode
 
-            </span>
-
-            <button id="zoomIn">
-
-                <i class="fa-solid fa-magnifying-glass-plus"></i>
-
-            </button>
-
-        </div>
-
-        <div id="status">
-
-            📷 Membuka kamera...
-
-        </div>
-
-    </section>
-
-    <!-- ======================================
-            FORM
-    ======================================= -->
-
-    <section class="card">
-
-        <div class="form-group">
-
-            <label>
-
-                Barcode
-
-            </label>
-
-            <input
-                type="text"
-                id="barcode"
-                readonly>
-
-        </div>
-
-        <div class="form-group">
-
-            <label>
-
-                Nama Barang
-
-            </label>
-
-            <input
-                type="text"
-                id="namaBarang"
-                placeholder="Masukkan nama barang">
-
-        </div>
-
-        <div class="form-group">
-
-            <label>
-
-                Petugas
-
-            </label>
-
-            <input
-                type="text"
-                id="petugas"
-                placeholder="Masukkan nama petugas">
-
-        </div>
-
-        <button
-            id="btnSimpan"
-            onclick="simpanData()">
-
-            <i class="fa-solid fa-floppy-disk"></i>
-
-            SIMPAN DATA
-
-        </button>
-
-    </section>
-
-    <!-- ======================================
-            HISTORY
-    ======================================= -->
-
-    <section class="card">
-
-        <div class="card-title">
-
-            <i class="fa-solid fa-clock-rotate-left"></i>
-
-            Riwayat Scan Hari Ini
-
-        </div>
-
-        <div id="historyList">
-
-            Belum ada scan hari ini
-
-        </div>
-
-    </section>
 
 </div>
 
-<!-- ======================================
-        SCRIPT
-======================================= -->
 
-<script src="app.js"></script>
 
-<script src="api.js"></script>
 
-<!-- ======================================
-        SERVICE WORKER
-======================================= -->
+
+<button id="startCamera">
+
+
+<i class="fa-solid fa-camera"></i>
+
+
+MULAI SCAN
+
+
+</button>
+
+
+
+<br><br>
+
+
+
+
+<div class="reader-container">
+
+
+<div id="reader">
+
+
+<video
+id="cameraVideo"
+autoplay
+muted
+playsinline
+webkit-playsinline>
+</video>
+
+
+</div>
+
+
+
+
+
+<div class="scanner-overlay">
+
+
+<div class="scan-box">
+
+
+<span class="corner tl"></span>
+
+<span class="corner tr"></span>
+
+<span class="corner bl"></span>
+
+<span class="corner br"></span>
+
+
+<div class="scan-line"></div>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<div class="scanner-tools">
+
+
+<button id="flashBtn">
+
+
+<i class="fa-solid fa-bolt"></i>
+
+
+</button>
+
+
+
+
+<button id="zoomOut">
+
+
+<i class="fa-solid fa-magnifying-glass-minus"></i>
+
+
+</button>
+
+
+
+
+
+<span id="zoomValue">
+
+1.0x
+
+</span>
+
+
+
+
+
+<button id="zoomIn">
+
+
+<i class="fa-solid fa-magnifying-glass-plus"></i>
+
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+<div id="status">
+
+
+Tekan MULAI SCAN untuk membuka kamera
+
+
+</div>
+
+
+
+</section>
+
+
+
+
+
+
+
+<!-- FORM -->
+
+
+<section class="card">
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Barcode
+
+</label>
+
+
+<input
+type="text"
+id="barcode"
+readonly>
+
+
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Nama Barang
+
+</label>
+
+
+<input
+type="text"
+id="namaBarang"
+placeholder="Masukkan nama barang">
+
+
+</div>
+
+
+
+
+
+<div class="form-group">
+
+
+<label>
+
+Petugas
+
+</label>
+
+
+<input
+type="text"
+id="petugas"
+placeholder="Masukkan nama petugas">
+
+
+</div>
+
+
+
+
+
+<button
+id="btnSimpan"
+onclick="simpanData()">
+
+
+
+<i class="fa-solid fa-floppy-disk"></i>
+
+
+SIMPAN DATA
+
+
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+
+<!-- HISTORY -->
+
+
+<section class="card">
+
+
+
+<div class="card-title">
+
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+
+
+Riwayat Scan Hari Ini
+
+
+
+</div>
+
+
+
+
+<div id="historyList">
+
+
+Belum ada scan hari ini
+
+
+
+</div>
+
+
+
+
+</section>
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- SCRIPT -->
+
+
+<script src="app.js" defer></script>
+
+
+<script src="api.js" defer></script>
+
+
+
+
+
+
+
+<!-- SERVICE WORKER -->
+
 
 <script>
 
+
 if ("serviceWorker" in navigator) {
 
-    window.addEventListener("load", () => {
 
-        navigator.serviceWorker
-            .register("./service-worker.js")
-            .then(reg => {
+window.addEventListener(
+"load",
+()=>{
 
-                console.log("Service Worker aktif");
 
-            })
-            .catch(err => {
+navigator.serviceWorker
+.register("./service-worker.js")
 
-                console.error(err);
 
-            });
+.then(()=>{
 
-    });
+
+console.log(
+"Service Worker aktif"
+);
+
+
+})
+
+
+.catch(err=>{
+
+
+console.error(err);
+
+
+});
+
+
+
+});
+
 
 }
 
+
 </script>
+
+
+
 
 </body>
 

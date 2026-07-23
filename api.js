@@ -1,74 +1,83 @@
 const API_URL = "https://script.google.com/macros/s/AKfycby6P0I_eMQxAAnb_6neqzvio_FVsQXy2TkBvZnSqcA3T8u7X05tCwvlYBODjdYrU7l1/exec";
 
+function getField(id) {
+  return document.getElementById(id);
+}
+
+function resetForm() {
+  const barcodeInput = getField("barcode");
+  const namaBarangInput = getField("namaBarang");
+  const petugasInput = getField("petugas");
+
+  if (barcodeInput) barcodeInput.value = "";
+  if (namaBarangInput) namaBarangInput.value = "";
+  if (petugasInput) petugasInput.value = "";
+
+  lastResult = "";
+  lastScanTime = 0;
+}
+
 async function simpanData() {
+  const barcode = getField("barcode")?.value.trim() || "";
+  const namaBarang = getField("namaBarang")?.value.trim() || "";
+  const petugas = getField("petugas")?.value.trim() || "";
 
-    const barcode = document.getElementById("barcode").value.trim();
-    const namaBarang = document.getElementById("namaBarang").value.trim();
-    const petugas = document.getElementById("petugas").value.trim();
+  if (!barcode) {
+    alert("Silakan scan barcode terlebih dahulu.");
+    return;
+  }
 
-    if (!barcode) {
-        alert("Silakan scan barcode terlebih dahulu.");
-        return;
+  if (!namaBarang) {
+    alert("Silakan isi nama barang.");
+    return;
+  }
+
+  if (!petugas) {
+    alert("Silakan isi nama petugas.");
+    return;
+  }
+
+  const statusEl = getField("status");
+  if (statusEl) statusEl.innerHTML = "⏳ Menyimpan...";
+
+  const formData = new FormData();
+  formData.append("barcode", barcode);
+  formData.append("namaBarang", namaBarang);
+  formData.append("petugas", petugas);
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      if (statusEl) {
+        statusEl.innerHTML = "✅ Data berhasil disimpan";
+      }
+
+      const historyList = getField("historyList");
+      if (historyList) {
+        historyList.innerHTML = "<div class='history-item'>✔ " + namaBarang + "</div>";
+      }
+
+      resetForm();
+
+      if (typeof mulaiScanner === "function") {
+        mulaiScanner();
+      }
+    } else {
+      if (statusEl) {
+        statusEl.innerHTML = "❌ " + result.message;
+      }
     }
+  } catch (err) {
+    console.error(err);
 
-    if (!namaBarang) {
-        alert("Silakan isi nama barang.");
-        return;
+    if (statusEl) {
+      statusEl.innerHTML = "❌ Gagal menghubungi server";
     }
-
-    if (!petugas) {
-        alert("Silakan isi nama petugas.");
-        return;
-    }
-
-    document.getElementById("status").innerHTML = "⏳ Menyimpan...";
-
-    const formData = new FormData();
-    formData.append("barcode", barcode);
-    formData.append("namaBarang", namaBarang);
-    formData.append("petugas", petugas);
-
-    try {
-
-        const response = await fetch(API_URL, {
-            method: "POST",
-            body: formData
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-
-            document.getElementById("status").innerHTML =
-                "✅ Data berhasil disimpan";
-
-            document.getElementById("barcode").value = "";
-            lastResult = "";
-            lastScanTime = 0;
-            document.getElementById("namaBarang").value = "";
-            document.getElementById("petugas").value = "";
-
-            document.getElementById("historyList").innerHTML =
-                "<div class='history-item'>✔ " + namaBarang + "</div>";
-
-            sudahScan = false;
-
-            mulaiScanner();
-
-        } else {
-
-            document.getElementById("status").innerHTML =
-                "❌ " + result.message;
-
-        }
-
-    } catch (err) {
-
-        console.error(err);
-
-        document.getElementById("status").innerHTML =
-            "❌ Gagal menghubungi server";
-
-    }
-
+  }
 }
