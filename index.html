@@ -49,7 +49,9 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- ================= ZXING ================= -->
+    <!-- library dulu (berisi BarcodeFormat, DecodeHintType), baru browser layer -->
 
+    <script src="https://unpkg.com/@zxing/library@0.20.0"></script>
     <script src="https://unpkg.com/@zxing/browser@0.1.5"></script>
 
 </head>
@@ -85,31 +87,28 @@
 
         <div class="card-title">
 
-            <i class="fa-solid fa-qrcode"></i>
+            <i class="fa-solid fa-barcode"></i>
 
-            Scan QR Code
-
-        <div class="reader-container">
-
-    <div id="reader"></div>
-
-    <div class="scanner-overlay">
-
-        <div class="scan-box">
-
-            <div class="scan-line"></div>
+            Scan Barcode
 
         </div>
 
-    </div>
+        <div class="reader-container">
 
-</div>
-
-            <!-- Overlay Scanner -->
+            <div id="reader"></div>
 
             <div class="scanner-overlay">
 
-                <div class="scan-box"></div>
+                <div class="scan-box">
+
+                    <span class="corner tl"></span>
+                    <span class="corner tr"></span>
+                    <span class="corner bl"></span>
+                    <span class="corner br"></span>
+
+                    <div class="scan-line"></div>
+
+                </div>
 
             </div>
 

@@ -34,7 +34,7 @@ body{
 
     background:
     linear-gradient(rgba(0,91,172,.75),rgba(0,91,172,.75)),
-    url("assetsheader-bg.png");
+    url("assets/header-bg.png");
 
     background-size:cover;
     background-position:center;
@@ -182,54 +182,6 @@ body{
     font-weight:600;
 
     margin-bottom:18px;
-
-}
-
-/* ==========================================
-   SCANNER
-========================================== */
-
-#reader{
-
-    width:100%;
-
-    height:380px;
-
-    background:#000;
-
-    border-radius:20px;
-
-    overflow:hidden;
-
-    position:relative;
-
-    border:none !important;
-
-}
-
-#reader video{
-
-    width:100%;
-
-    height:100%;
-
-    object-fit:cover;
-
-    border-radius:20px;
-
-}
-
-#reader div{
-
-    border:none !important;
-
-}
-
-#reader__scan_region{
-
-    border-radius:20px;
-
-    overflow:hidden;
 
 }
 
@@ -657,19 +609,71 @@ height:320px;
 
 .scan-box{
 
-    width:230px;
+    width:82%;
 
-    height:230px;
+    max-width:300px;
 
-    border:3px solid rgba(255,255,255,.9);
+    height:130px;
 
-    border-radius:20px;
+    border-radius:16px;
 
     position:relative;
 
     box-shadow:
 
-    0 0 0 9999px rgba(0,0,0,.30);
+    0 0 0 9999px rgba(0,0,0,.35);
+
+}
+
+.corner{
+
+    position:absolute;
+
+    width:30px;
+
+    height:30px;
+
+    border:4px solid #00e676;
+
+}
+
+.corner.tl{
+
+    top:-3px;
+    left:-3px;
+    border-right:none;
+    border-bottom:none;
+    border-radius:14px 0 0 0;
+
+}
+
+.corner.tr{
+
+    top:-3px;
+    right:-3px;
+    border-left:none;
+    border-bottom:none;
+    border-radius:0 14px 0 0;
+
+}
+
+.corner.bl{
+
+    bottom:-3px;
+    left:-3px;
+    border-right:none;
+    border-top:none;
+    border-radius:0 0 0 14px;
+
+}
+
+.corner.br{
+
+    bottom:-3px;
+    right:-3px;
+    border-left:none;
+    border-top:none;
+    border-radius:0 0 14px 0;
 
 }
 
@@ -677,17 +681,19 @@ height:320px;
 
     position:absolute;
 
-    left:0;
+    left:4px;
 
-    width:100%;
+    right:4px;
 
-    height:3px;
+    width:auto;
 
-    background:#00ff66;
+    height:2px;
+
+    background:#00e676;
 
     animation:scannerMove 2s linear infinite;
 
-    box-shadow:0 0 15px #00ff66;
+    box-shadow:0 0 15px #00e676;
 
 }
 
@@ -695,19 +701,19 @@ height:320px;
 
     0%{
 
-        top:5px;
+        top:6px;
 
     }
 
     50%{
 
-        top:210px;
+        top:120px;
 
     }
 
     100%{
 
-        top:5px;
+        top:6px;
 
     }
 
