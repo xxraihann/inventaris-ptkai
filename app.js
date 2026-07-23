@@ -53,6 +53,14 @@ async function mulaiScanner() {
 
     try {
 
+        if (typeof ZXingBrowser === "undefined" || typeof ZXing === "undefined") {
+
+            status("❌ Gagal memuat library scanner. Cek koneksi internet lalu refresh halaman.");
+
+            return;
+
+        }
+
         status("📷 Membuka kamera...");
 
         codeReader = new ZXingBrowser.BrowserMultiFormatReader(buatHints());
@@ -63,19 +71,34 @@ async function mulaiScanner() {
         // pertama bikin permintaan kamera gagal total (OverconstrainedError).
         // Jadi kita minta kamera pakai facingMode saja -- browser yang
         // otomatis pilih kamera belakang, jauh lebih tahan banting.
+        //
+        // "focusMode" SENGAJA tidak dimasukkan di sini -- properti ini
+        // bukan constraint standar di semua browser, dan kalau dipaksakan
+        // di permintaan awal getUserMedia bisa bikin browser menolak
+        // permintaan kamera sepenuhnya (OverconstrainedError) walau resolusi
+        // sudah benar. Autofocus diterapkan belakangan, terpisah, dan aman
+        // kalau gagal (lihat terapkanFocus()).
         const constraints = {
             video: {
                 facingMode: { ideal: "environment" },
-                focusMode: "continuous",
                 width: { ideal: 1280 },
                 height: { ideal: 720 }
             },
             audio: false
         };
 
+        const cameraVideo = document.getElementById("cameraVideo");
+
+        if (!cameraVideo) {
+
+            status("❌ Elemen video kamera tidak ditemukan di halaman");
+            return;
+
+        }
+
         scannerControls = await codeReader.decodeFromConstraints(
             constraints,
-            "reader",
+            cameraVideo,
             (result, err) => {
 
                 if (result) {
@@ -103,10 +126,9 @@ async function mulaiScanner() {
             }
         );
 
-        const video = document.querySelector("#reader video");
-
-        if (video && video.srcObject) {
-            activeStream = video.srcObject;
+        if (cameraVideo && cameraVideo.srcObject) {
+            activeStream = cameraVideo.srcObject;
+            terapkanFocus();
         }
 
         status("✅ Scanner siap");
@@ -138,6 +160,39 @@ async function mulaiScanner() {
             status("❌ Gagal membuka kamera (" + error.name + ")");
 
         }
+
+    }
+
+}
+
+// ======================================
+// AUTOFOCUS (diterapkan terpisah, aman
+// walau device/browser tidak mendukung)
+// ======================================
+
+async function terapkanFocus() {
+
+    if (!activeStream) return;
+
+    const track = activeStream.getVideoTracks()[0];
+
+    if (!track) return;
+
+    try {
+
+        const capabilities = track.getCapabilities ? track.getCapabilities() : {};
+
+        if (capabilities.focusMode && capabilities.focusMode.includes("continuous")) {
+
+            await track.applyConstraints({
+                advanced: [{ focusMode: "continuous" }]
+            });
+
+        }
+
+    } catch (err) {
+
+        console.log("Autofocus tidak didukung, dilewati", err);
 
     }
 
