@@ -53,42 +53,19 @@ async function mulaiScanner() {
 
     try {
 
-        status("📷 Mencari kamera...");
-
-        const videoInputDevices =
-            await ZXingBrowser.BrowserCodeReader.listVideoInputDevices();
-
-        if (!videoInputDevices.length) {
-
-            status("❌ Kamera tidak ditemukan");
-
-            return;
-        }
-
-        // Cari kamera belakang
-        let selectedDevice =
-            videoInputDevices.find(device =>
-                device.label.toLowerCase().includes("back") ||
-                device.label.toLowerCase().includes("rear") ||
-                device.label.toLowerCase().includes("environment")
-            );
-
-        if (!selectedDevice) {
-            selectedDevice = videoInputDevices[videoInputDevices.length - 1];
-        }
+        status("📷 Membuka kamera...");
 
         codeReader = new ZXingBrowser.BrowserMultiFormatReader(buatHints());
 
-        status("📷 Membuka kamera...");
-
-        // Resolusi & autofocus di-set SEKALIGUS saat kamera pertama kali
-        // dibuka (bukan diubah belakangan) supaya video track tidak
-        // "restart" di tengah proses decode -- ini penyebab utama
-        // scan lama/gagal sebelumnya.
+        // PENTING: sebelum izin kamera pernah diberikan di domain ini,
+        // enumerateDevices()/deviceId dari browser BELUM valid (dikosongkan
+        // browser demi privasi). Memaksa deviceId "exact" di kunjungan
+        // pertama bikin permintaan kamera gagal total (OverconstrainedError).
+        // Jadi kita minta kamera pakai facingMode saja -- browser yang
+        // otomatis pilih kamera belakang, jauh lebih tahan banting.
         const constraints = {
             video: {
-                deviceId: { exact: selectedDevice.deviceId },
-                facingMode: "environment",
+                facingMode: { ideal: "environment" },
                 focusMode: "continuous",
                 width: { ideal: 1280 },
                 height: { ideal: 720 }
@@ -140,7 +117,27 @@ async function mulaiScanner() {
 
         console.error(error);
 
-        status("❌ Gagal membuka kamera");
+        if (error.name === "NotAllowedError") {
+
+            status("❌ Izin kamera ditolak. Cek pengaturan izin situs di browser Anda.");
+
+        } else if (error.name === "NotFoundError") {
+
+            status("❌ Kamera tidak ditemukan di perangkat ini");
+
+        } else if (error.name === "NotReadableError") {
+
+            status("❌ Kamera sedang dipakai aplikasi lain. Tutup aplikasi lain lalu coba lagi.");
+
+        } else if (error.name === "OverconstrainedError") {
+
+            status("❌ Kamera tidak mendukung pengaturan yang diminta");
+
+        } else {
+
+            status("❌ Gagal membuka kamera (" + error.name + ")");
+
+        }
 
     }
 
