@@ -1,389 +1,610 @@
 // ======================================
 // INVENTARIS PT KAI
-// SCANNER ENGINE V3.0 - ZXing (dioptimasi)
+// SCANNER ENGINE V3.1 - ZXing QR OPTIMIZED
 // ======================================
 
 let codeReader;
-let scannerControls;   // controls dari decodeFromConstraints, buat stop/torch
-let activeStream;       // referensi stream buat flash & zoom
+let scannerControls;
+let activeStream;
+
 let lastResult = "";
 let lastScanTime = 0;
+
 let currentZoom = 1;
+let flashOn = false;
 
 const SCAN_DELAY = 2000;
 
+
+// suara berhasil scan
 const beep = new Audio(
     "https://actions.google.com/sounds/v1/cartoon/pop.ogg"
 );
 
+
 // ======================================
-// HINTS ZXING
-// Barcode di aset PT KAI adalah barcode 1D (Code128/Code39/EAN),
-// BUKAN QR. Membatasi format bikin decoder jauh lebih cepat &
-// akurat karena tidak perlu coba ~13 format tiap frame.
-// Kalau ternyata ada juga kode berbentuk QR, tambahkan
-// ZXing.BarcodeFormat.QR_CODE ke array di bawah.
+// ZXING HINTS
+// QR CODE ASET PT KAI
 // ======================================
 
 function buatHints() {
 
     const hints = new Map();
 
+
     hints.set(
         ZXing.DecodeHintType.POSSIBLE_FORMATS,
         [
             ZXing.BarcodeFormat.QR_CODE,
-            ZXing.BarcodeFormat.DATA_MATRIX,
-            ZXing.BarcodeFormat.CODE_128,
-            ZXing.BarcodeFormat.CODE_39
+            ZXing.BarcodeFormat.DATA_MATRIX
         ]
     );
+
 
     hints.set(
         ZXing.DecodeHintType.TRY_HARDER,
         true
     );
 
-    return hints;
-}
-    // TRY_HARDER dimatikan by default (lebih cepat). Kalau barcode
-    // banyak yang buram/rusak dan susah kebaca, ubah jadi true --
-    // konsekuensinya scan sedikit lebih lambat per frame.
-    hints.set(ZXing.DecodeHintType.TRY_HARDER, false);
 
     return hints;
 
 }
+
+
+// ======================================
+// MULAI SCANNER
+// ======================================
 
 async function mulaiScanner() {
 
     try {
 
-        if (typeof ZXingBrowser === "undefined" || typeof ZXing === "undefined") {
 
-            status("❌ Gagal memuat library scanner. Cek koneksi internet lalu refresh halaman.");
+        if (
+            typeof ZXing === "undefined" ||
+            typeof ZXingBrowser === "undefined"
+        ) {
+
+            status(
+                "❌ Library scanner gagal dimuat"
+            );
 
             return;
 
         }
 
-        status("📷 Membuka kamera...");
 
-        codeReader = new ZXingBrowser.BrowserMultiFormatReader(buatHints());
-
-        // PENTING: sebelum izin kamera pernah diberikan di domain ini,
-        // enumerateDevices()/deviceId dari browser BELUM valid (dikosongkan
-        // browser demi privasi). Memaksa deviceId "exact" di kunjungan
-        // pertama bikin permintaan kamera gagal total (OverconstrainedError).
-        // Jadi kita minta kamera pakai facingMode saja -- browser yang
-        // otomatis pilih kamera belakang, jauh lebih tahan banting.
-        //
-        // "focusMode" SENGAJA tidak dimasukkan di sini -- properti ini
-        // bukan constraint standar di semua browser, dan kalau dipaksakan
-        // di permintaan awal getUserMedia bisa bikin browser menolak
-        // permintaan kamera sepenuhnya (OverconstrainedError) walau resolusi
-        // sudah benar. Autofocus diterapkan belakangan, terpisah, dan aman
-        // kalau gagal (lihat terapkanFocus()).
-        const constraints = {
-    video: {
-    facingMode: {
-        ideal: "environment"
-    },
-    width: {
-        ideal: 1920
-    },
-    height: {
-        ideal: 1080
-    }
-}
-
-        const cameraVideo = document.getElementById("cameraVideo");
-
-        if (!cameraVideo) {
-
-            status("❌ Elemen video kamera tidak ditemukan di halaman");
-            return;
-
-        }
-
-        scannerControls = await codeReader.decodeFromConstraints(
-            constraints,
-            cameraVideo,
-            (result, err) => {
-
-                if (result) {
-
-                    const barcode =
-                        result.text.trim();
-
-                    const now = Date.now();
-
-                    if (
-                        barcode === lastResult &&
-                        (now - lastScanTime) < SCAN_DELAY
-                    ) {
-                        return;
-                    }
-
-                    lastResult = barcode;
-                    lastScanTime = now;
-
-                    document.getElementById("barcode").value =
-                        barcode;
-
-                    suksesScan();
-                }
-            }
+        status(
+            "📷 Membuka kamera..."
         );
 
-        if (cameraVideo && cameraVideo.srcObject) {
-            activeStream = cameraVideo.srcObject;
-            terapkanFocus();
-            if (capabilities.zoom) {
-                await track.applyConstraints({
-                advanced:[
-                {
-                zoom: capabilities.zoom.max * 0.6
-            }
-        ]
-    });
 
-}
+        codeReader =
+            new ZXingBrowser.BrowserMultiFormatReader(
+                buatHints()
+            );
+
+
+        const constraints = {
+
+
+            video: {
+
+                facingMode: {
+
+                    ideal: "environment"
+
+                },
+
+
+                width: {
+
+                    ideal:1920
+
+                },
+
+
+                height: {
+
+                    ideal:1080
+
+                }
+
+            }
+
+
+        };
+
+
+        const video =
+            document.getElementById(
+                "cameraVideo"
+            );
+
+
+        if(!video){
+
+            status(
+                "❌ Video kamera tidak ditemukan"
+            );
+
+            return;
+
         }
 
-        status("✅ Scanner siap");
+
+
+        scannerControls =
+            await codeReader.decodeFromConstraints(
+
+                constraints,
+
+                video,
+
+
+                (result,error)=>{
+
+
+                    if(result){
+
+
+                        const barcode =
+                            result.text.trim();
+
+
+                        const now =
+                            Date.now();
+
+
+
+                        if(
+                            barcode === lastResult &&
+                            now-lastScanTime < SCAN_DELAY
+                        ){
+
+                            return;
+
+                        }
+
+
+
+                        lastResult = barcode;
+
+                        lastScanTime = now;
+
+
+
+                        document.getElementById(
+                            "barcode"
+                        ).value = barcode;
+
+
+
+                        suksesScan();
+
+                    }
+
+
+                }
+
+
+            );
+
+
+
+        if(video.srcObject){
+
+
+            activeStream =
+                video.srcObject;
+
+
+            terapkanFocus();
+
+
+        }
+
+
+
+        status(
+            "✅ Scanner siap"
+        );
+
+
 
     }
 
-    catch (error) {
+    catch(error){
+
 
         console.error(error);
 
-        if (error.name === "NotAllowedError") {
 
-            status("❌ Izin kamera ditolak. Cek pengaturan izin situs di browser Anda.");
 
-        } else if (error.name === "NotFoundError") {
+        if(error.name==="NotAllowedError"){
 
-            status("❌ Kamera tidak ditemukan di perangkat ini");
-
-        } else if (error.name === "NotReadableError") {
-
-            status("❌ Kamera sedang dipakai aplikasi lain. Tutup aplikasi lain lalu coba lagi.");
-
-        } else if (error.name === "OverconstrainedError") {
-
-            status("❌ Kamera tidak mendukung pengaturan yang diminta");
-
-        } else {
-
-            status("❌ Gagal membuka kamera (" + error.name + ")");
+            status(
+                "❌ Izin kamera ditolak"
+            );
 
         }
 
+
+        else if(error.name==="NotFoundError"){
+
+            status(
+                "❌ Kamera tidak ditemukan"
+            );
+
+        }
+
+
+        else if(error.name==="NotReadableError"){
+
+            status(
+                "❌ Kamera sedang digunakan aplikasi lain"
+            );
+
+        }
+
+
+        else{
+
+
+            status(
+                "❌ Kamera gagal dibuka : "
+                + error.name
+            );
+
+
+        }
+
+
     }
+
 
 }
 
+
+
 // ======================================
-// AUTOFOCUS (diterapkan terpisah, aman
-// walau device/browser tidak mendukung)
+// AUTOFOCUS
 // ======================================
 
-async function terapkanFocus() {
 
-    if (!activeStream) return;
+async function terapkanFocus(){
 
-    const track = activeStream.getVideoTracks()[0];
 
-    if (!track) return;
+    if(!activeStream)
+        return;
 
-    try {
 
-        const capabilities = track.getCapabilities ? track.getCapabilities() : {};
 
-        if (capabilities.focusMode && capabilities.focusMode.includes("continuous")) {
+    const track =
+        activeStream.getVideoTracks()[0];
+
+
+
+    if(!track)
+        return;
+
+
+
+    try{
+
+
+        const capabilities =
+            track.getCapabilities();
+
+
+
+        if(
+            capabilities.focusMode &&
+            capabilities.focusMode.includes(
+                "continuous"
+            )
+        ){
+
 
             await track.applyConstraints({
-                advanced: [{ focusMode: "continuous" }]
+
+                advanced:[
+
+                    {
+
+                        focusMode:
+                        "continuous"
+
+                    }
+
+                ]
+
             });
+
 
         }
 
-    } catch (err) {
 
-        console.log("Autofocus tidak didukung, dilewati", err);
 
     }
 
+    catch(error){
+
+
+        console.log(
+            "Autofocus tidak tersedia"
+        );
+
+
+    }
+
+
 }
 
+
+
 // ======================================
-// FLASH (TORCH)
+// FLASH
 // ======================================
 
-let flashOn = false;
 
-async function toggleFlash() {
+async function toggleFlash(){
 
-    if (!activeStream) return;
 
-    const track = activeStream.getVideoTracks()[0];
+    if(!activeStream)
+        return;
 
-    if (!track) return;
 
-    const capabilities = track.getCapabilities ? track.getCapabilities() : {};
 
-    if (!capabilities.torch) {
+    const track =
+        activeStream.getVideoTracks()[0];
 
-        status("⚠️ Flash tidak didukung perangkat ini");
+
+
+    const capabilities =
+        track.getCapabilities();
+
+
+
+    if(!capabilities.torch){
+
+
+        status(
+            "⚠️ Flash tidak tersedia"
+        );
+
 
         return;
 
     }
 
-    try {
 
-        flashOn = !flashOn;
 
-        await track.applyConstraints({
-            advanced: [{ torch: flashOn }]
-        });
+    flashOn =
+        !flashOn;
 
-    } catch (err) {
 
-        console.log("Flash gagal diaktifkan", err);
 
-    }
+    await track.applyConstraints({
+
+        advanced:[
+
+            {
+
+                torch:
+                flashOn
+
+            }
+
+        ]
+
+    });
+
 
 }
+
+
 
 // ======================================
 // ZOOM
 // ======================================
 
-async function ubahZoom(arah) {
 
-    if (!activeStream) return;
+async function ubahZoom(arah){
 
-    const track = activeStream.getVideoTracks()[0];
 
-    if (!track) return;
+    if(!activeStream)
+        return;
 
-    const capabilities = track.getCapabilities ? track.getCapabilities() : {};
 
-    if (!capabilities.zoom) {
 
-        status("⚠️ Zoom tidak didukung perangkat ini");
+    const track =
+        activeStream.getVideoTracks()[0];
+
+
+
+    const capabilities =
+        track.getCapabilities();
+
+
+
+    if(!capabilities.zoom){
+
+
+        status(
+            "⚠️ Zoom tidak tersedia"
+        );
+
 
         return;
 
     }
 
+
+
     const step = 0.5;
-    const min = capabilities.zoom.min;
-    const max = capabilities.zoom.max;
 
-    currentZoom = arah === "in"
-        ? Math.min(max, currentZoom + step)
-        : Math.max(min, currentZoom - step);
 
-    try {
 
-        await track.applyConstraints({
-            advanced: [{ zoom: currentZoom }]
-        });
+    if(arah==="in"){
 
-        document.getElementById("zoomValue").textContent =
-            currentZoom.toFixed(1) + "x";
 
-    } catch (err) {
+        currentZoom =
+            Math.min(
+                capabilities.zoom.max,
+                currentZoom + step
+            );
 
-        console.log("Zoom gagal diterapkan", err);
 
     }
 
+    else{
+
+
+        currentZoom =
+            Math.max(
+                capabilities.zoom.min,
+                currentZoom - step
+            );
+
+
+    }
+
+
+
+    await track.applyConstraints({
+
+        advanced:[
+
+            {
+
+                zoom:
+                currentZoom
+
+            }
+
+        ]
+
+    });
+
+
+
+    document.getElementById(
+        "zoomValue"
+    ).innerText =
+        currentZoom.toFixed(1)+"x";
+
+
 }
 
+
+
 // ======================================
-// SUKSES SCAN
+// BERHASIL SCAN
 // ======================================
 
-function suksesScan() {
 
-    if (navigator.vibrate) {
+function suksesScan(){
+
+
+    if(navigator.vibrate){
 
         navigator.vibrate(150);
 
     }
 
-    beep.currentTime = 0;
 
-    beep.play().catch(() => {});
+    beep.currentTime=0;
 
-    const reader =
-        document.getElementById("reader");
 
-    reader.classList.add(
-        "scan-success"
-    );
+    beep.play()
+    .catch(()=>{});
 
-    setTimeout(() => {
 
-        reader.classList.remove(
-            "scan-success"
-        );
-
-    }, 400);
 
     status(
         "✅ Barcode berhasil dipindai"
     );
 
+
 }
+
+
 
 // ======================================
 // STATUS
 // ======================================
 
-function status(text) {
+
+function status(text){
+
 
     const el =
-        document.getElementById("status");
+        document.getElementById(
+            "status"
+        );
 
-    if (!el) return;
 
-    el.style.display = "block";
+    if(el){
 
-    el.innerHTML = text;
+        el.innerHTML=text;
 
-}
+    }
 
-// ======================================
-// RESET SETELAH SIMPAN
-// ======================================
-
-function resetScanner() {
-
-    lastResult = "";
-    lastScanTime = 0;
 
 }
 
+
+
 // ======================================
-// EVENT LISTENERS TOMBOL
+// EVENT
 // ======================================
 
-window.addEventListener("load", () => {
+
+window.addEventListener(
+"load",
+()=>{
+
 
     mulaiScanner();
 
-    const flashBtn = document.getElementById("flashBtn");
-    const zoomIn = document.getElementById("zoomIn");
-    const zoomOut = document.getElementById("zoomOut");
 
-    if (flashBtn) flashBtn.addEventListener("click", toggleFlash);
-    if (zoomIn) zoomIn.addEventListener("click", () => ubahZoom("in"));
-    if (zoomOut) zoomOut.addEventListener("click", () => ubahZoom("out"));
+
+    const flashBtn =
+        document.getElementById(
+            "flashBtn"
+        );
+
+
+    const zoomIn =
+        document.getElementById(
+            "zoomIn"
+        );
+
+
+    const zoomOut =
+        document.getElementById(
+            "zoomOut"
+        );
+
+
+
+    if(flashBtn)
+        flashBtn.onclick =
+        toggleFlash;
+
+
+
+    if(zoomIn)
+        zoomIn.onclick =
+        ()=>ubahZoom("in");
+
+
+
+    if(zoomOut)
+        zoomOut.onclick =
+        ()=>ubahZoom("out");
+
 
 });
